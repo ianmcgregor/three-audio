@@ -48,11 +48,6 @@ AudioRoom.prototype.createScene = function() {
     this.room = new Room(512, 2048, 256);
     this.scene.add(this.room);
 
-    this.bulb = new THREE.Mesh(new THREE.BoxGeometry(8, 4, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }));
-    this.bulb.position.set(0, 192, 312);
-    this.bulb.rotation.y = Math.PI/4;
-    this.room.add(this.bulb);
-
     var materials = [];
     var faces = ['left', 'right', 'top', 'bottom', 'front', 'back'];
     for ( var i = 0; i < faces.length; i ++ ) {
@@ -63,8 +58,8 @@ AudioRoom.prototype.createScene = function() {
     this.hero.position.z = 64;
     this.room.add(this.hero);
 
-    this.speaker = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 16), new THREE.MeshLambertMaterial({ color: 0x00ff00 }));
-    this.speaker.position.set(-100, 16, 200);
+    this.speaker = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 16), new THREE.MeshPhongMaterial({ color: 0x22ee22 }));
+    this.speaker.position.set(-100, 24, 200);
     this.room.add(this.speaker);
 
     var info = document.createElement('p');
@@ -73,16 +68,18 @@ AudioRoom.prototype.createScene = function() {
 };
 
 AudioRoom.prototype.createLights = function() {
-    this.light = new THREE.PointLight();
-    this.light.position.set(0, 64, 256);
+    this.light = new THREE.PointLight(0xffffff, 1, 2000);
+    this.light.position.set(50, 64, 1024);
     this.scene.add(this.light);
 
+    this.scene.add(new THREE.PointLightHelper(this.light, 30));
+
     this.ambientLight = new THREE.AmbientLight(0x222200);
-    this.room.add(this.ambientLight);
+    this.scene.add(this.ambientLight);
 
     this.directionalLight = new THREE.DirectionalLight(0x444444);
-    this.directionalLight.position.set(1, 1, 0).normalize();
-    this.room.add(this.directionalLight);
+    this.directionalLight.position.set(1, 0, 1).normalize();
+    this.scene.add(this.directionalLight);
 };
 
 AudioRoom.prototype.updateAudio = function() {
