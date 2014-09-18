@@ -83,22 +83,23 @@ ThreeAudio.prototype.createLights = function() {
 };
 
 ThreeAudio.prototype.createAudio = function() {
-    this.sound = Sono.load('drums', ['audio/DRUMS.ogg', 'audio/DRUMS.mp3'], true);
+    this.sound = Sono.createSound(['audio/DRUMS.ogg', 'audio/DRUMS.mp3']);
+    this.sound.loop = true;
     // add a panner node
-    var panner = this.sound.addNode(Sono.create.pan());
-    panner.distanceModel = 'linear'; // 'linear' 'inverse' 'exponential'
-    panner.refDistance = 1;
-    panner.maxDistance = 1000;
-    panner.rolloffFactor = 1;
+    this.pan = this.sound.node.panner();
+    this.pan.node.distanceModel = 'linear'; // 'linear' 'inverse' 'exponential'
+    this.pan.node.refDistance = 1;
+    this.pan.node.maxDistance = 1000;
+    this.pan.node.rolloffFactor = 1;
     /*panner.coneOuterGain = 0.5;
     panner.coneOuterAngle = 180;
     panner.coneInnerAngle = 0;*/
     // get pan helper util
-    this.pan = Sono.utils.panHandler(panner);
+    //this.pan = Sono.utils.pan(panner);
     // set the audio position and orientation to forward vec of speaker
-    var p = this.speaker.position.clone().normalize();
     this.pan.setSourcePosition(this.speaker.position);
-    this.pan.setSourceOrientation(p);
+    var o = this.speaker.position.clone().normalize();
+    this.pan.setSourceOrientation(o);
     // play
     this.sound.play();
 };
