@@ -1,22 +1,32 @@
 'use strict';
 
-var Sono = require('./lib/sono.js'),
+var Sono = require('./lib/sono.min.js'),
     THREE = require('THREE'),
     ThreeBase = require('./utils/three-base.js'),
     Room = require('./view/room.js'),
     Hero = require('./view/hero.js'),
+    Speaker = require('./view/speaker.js'),
     ready = require('Lib').ready;
 
 function ThreeAudio() {
     ThreeBase.call(this, 45);
 
     this.createScene();
-    this.createLights();
-    this.createAudio();
+    //this.createLights();
+    //this.createAudio();
 
-    this.camera.position.set(0, 80, 400);
+    this.camera.position.set(0, 40, 100);
 
     this.render();
+
+    //Sono.mute();
+
+    Sono.node.panning.setDefaults({
+        distanceModel: 'linear',
+        refDistance: 1,
+        maxDistance: 1000,
+        rolloffFactor: 1
+    });
 }
 
 ThreeAudio.prototype = Object.create(ThreeBase.prototype);
@@ -37,13 +47,25 @@ ThreeAudio.prototype.update = function(deltaTime, elapsedTime) {
 
     this.updateAudio();
 
-    this.speaker.scale.x = this.speaker.scale.y = 2 + Math.sin(elapsedTime * 12)/4;
+    //this.speaker.scale.x = this.speaker.scale.y = 2 + Math.sin(elapsedTime * 12)/4;
+    this.speakers.forEach(function(item) {
+        item.update(elapsedTime);
+    });
 
     this.hero.update();
+
+    this.hero.add(this.camera);
+
+    this.hero.visible = false;
+
+    //this.camera.quaternion.copy(this.hero.quaternion);
+    //this.camera.position.set(this.hero.position.x, this.hero.position.y + 128, this.hero.position.z - 256);
+    //this.camera.lookAt(this.hero.position);
+    ////this.camera.quaternion.inverse();
 };
 
 ThreeAudio.prototype.createScene = function() {
-    this.room = new Room(512, 2048, 256);
+    this.room = new Room(2048, 2048, 512);
     this.scene.add(this.room);
 
     var materials = [];
@@ -58,32 +80,66 @@ ThreeAudio.prototype.createScene = function() {
     this.hero.position.z = 64;
     this.room.add(this.hero);
 
-    this.speaker = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 16), new THREE.MeshPhongMaterial({ color: 0x22ee22 }));
+    this.ambientLight = new THREE.AmbientLight(0x222200);
+    this.scene.add(this.ambientLight);
+
+    var x = 500,
+        y = 200,
+        z = 500;
+
+    this.speakers = [
+        new Speaker(this.scene, ['audio/DRUMS.ogg', 'audio/DRUMS.mp3'], x, y, z),
+        new Speaker(this.scene, ['audio/DRUMS.ogg', 'audio/DRUMS.mp3'], -x, y, -z),
+        new Speaker(this.scene, ['audio/DRUMS.ogg', 'audio/DRUMS.mp3'], -x, y, z),
+        new Speaker(this.scene, ['audio/DRUMS.ogg', 'audio/DRUMS.mp3'], x, y, -z)
+    ];
+
+    /*this.speaker = new THREE.Mesh(new THREE.SphereGeometry(8, 16, 16), new THREE.MeshPhongMaterial({ color: 0x22ee22 }));
     this.speaker.position.set(-100, 24, 200);
     this.room.add(this.speaker);
-
+*/
     var info = document.createElement('p');
     info.innerHTML = 'Use the arrow keys or WASD to move around the room. Space to jump.';
     document.body.appendChild(info);
 };
 
 ThreeAudio.prototype.createLights = function() {
-    this.light = new THREE.PointLight(0xffffff, 1, 2000);
-    this.light.position.set(50, 64, 1024);
-    this.scene.add(this.light);
+    /*var lightY = 200,
+        lightPos = 500,
+        lightAmt = 900,
+        lightCol = 0xffffff;
 
-    this.scene.add(new THREE.PointLightHelper(this.light, 30));
+    var light = new THREE.PointLight(lightCol, 1, lightAmt);
+    light.position.set(lightPos, lightY, lightPos);
+    this.scene.add(light);
+
+    var lightB = new THREE.PointLight(lightCol, 1, lightAmt);
+    lightB.position.set(-lightPos, lightY, -lightPos);
+    this.scene.add(lightB);
+
+    var lightC = new THREE.PointLight(lightCol, 1, lightAmt);
+    lightC.position.set(-lightPos, lightY, lightPos);
+    this.scene.add(lightC);
+
+    var lightD = new THREE.PointLight(lightCol, 1, lightAmt);
+    lightD.position.set(lightPos, lightY, -lightPos);
+    this.scene.add(lightD);
 
     this.ambientLight = new THREE.AmbientLight(0x222200);
     this.scene.add(this.ambientLight);
+    
+    this.scene.add(new THREE.PointLightHelper(light, 30));
+    this.scene.add(new THREE.PointLightHelper(lightB, 30));
+    this.scene.add(new THREE.PointLightHelper(lightC, 30));
+    this.scene.add(new THREE.PointLightHelper(lightD, 30));*/
 
-    this.directionalLight = new THREE.DirectionalLight(0x444444);
-    this.directionalLight.position.set(1, 0, 1).normalize();
-    this.scene.add(this.directionalLight);
+    /*this.directionalLight = new THREE.DirectionalLight(0x444444);
+    this.directionalLight.position.set(1, 1, 0).normalize();
+    this.scene.add(this.directionalLight);*/
 };
 
 ThreeAudio.prototype.createAudio = function() {
-    this.sound = Sono.createSound(['audio/DRUMS.ogg', 'audio/DRUMS.mp3']);
+/*    this.sound = Sono.createSound(['audio/DRUMS.ogg', 'audio/DRUMS.mp3']);
     this.sound.loop = true;
     // add a panner node
     this.pan = this.sound.node.panner();
@@ -91,9 +147,7 @@ ThreeAudio.prototype.createAudio = function() {
     this.pan.node.refDistance = 1;
     this.pan.node.maxDistance = 1000;
     this.pan.node.rolloffFactor = 1;
-    /*panner.coneOuterGain = 0.5;
-    panner.coneOuterAngle = 180;
-    panner.coneInnerAngle = 0;*/
+    
     // get pan helper util
     //this.pan = Sono.utils.pan(panner);
     // set the audio position and orientation to forward vec of speaker
@@ -102,12 +156,14 @@ ThreeAudio.prototype.createAudio = function() {
     this.pan.setSourceOrientation(o);
     // play
     this.sound.play();
+    */
 };
 
 ThreeAudio.prototype.updateAudio = function() {
     // set listener position and orientation to hero vec
-    this.pan.setListenerOrientation(this.hero.forward);
-    this.pan.setListenerPosition(this.hero.position);
+    console.log(Sono.node.panning);
+    Sono.node.panning.setListenerOrientation(this.hero.forward);
+    Sono.node.panning.setListenerPosition(this.hero.position);
 };
 
 ready(function() {

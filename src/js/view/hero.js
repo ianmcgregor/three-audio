@@ -51,10 +51,10 @@ Hero.prototype.preUpdate = function(deltaTime, elapsedTime) {
     this.forward.applyQuaternion(this.quaternion);
 
     if(KeyInput.up()) {
-        this.velocity.z = Lib.MathUtils.lerp(this.velocity.z, this.maxSpeed, 0.2);
+        this.velocity.z = Lib.MathUtils.lerp(this.velocity.z, -this.maxSpeed, 0.2);
     }
     else if(KeyInput.down()) {
-        this.velocity.z = Lib.MathUtils.lerp(this.velocity.z, -this.maxSpeed, 0.2);
+        this.velocity.z = Lib.MathUtils.lerp(this.velocity.z, this.maxSpeed, 0.2);
     }
     else {
         this.velocity.z *= 0.5;

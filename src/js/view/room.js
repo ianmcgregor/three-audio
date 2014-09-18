@@ -6,10 +6,10 @@ function Room(width, depth, height) {
     THREE.Object3D.call(this);
 
     width = width || 512;
-    depth = depth || 512;
+    depth = depth || 1024;
     height = height || 256;
 
-    var material = new THREE.MeshLambertMaterial({ color: '#ffffff' });
+    var material = new THREE.MeshPhongMaterial({ color: '#ffffff' });
 
     this.ground = new THREE.Mesh(new THREE.PlaneGeometry(width, depth), material);
     this.ground.rotation.x = -Math.PI / 2;
