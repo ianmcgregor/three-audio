@@ -19,27 +19,34 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "browserify": "^4.2.0",
-    "browserify-shim": "^3.6.0",
-    "chalk": "^0.5.0",
-    "gulp": "^3.8.5",
+    "browserify": "^5.12.0",
+    "browserify-shim": "^3.7.0",
+    "chalk": "^0.5.1",
+    "gulp": "^3.8.8",
     "gulp-connect": "^2.0.6",
-    "gulp-if": "^1.2.1",
-    "gulp-jshint": "^1.7.0",
+    "gulp-if": "^1.2.4",
+    "gulp-jshint": "^1.8.4",
     "gulp-rename": "^1.2.0",
     "gulp-streamify": "^0.0.5",
-    "gulp-strip-debug": "^0.3.0",
-    "gulp-uglify": "^0.3.1",
-    "jshint-stylish": "^0.3.0",
-    "vinyl-source-stream": "^0.1.1"
+    "gulp-strip-debug": "^1.0.1",
+    "gulp-uglify": "^1.0.1",
+    "jshint-stylish": "^0.4.0",
+    "signals": "^1.0.0",
+    "three": "^0.68.0",
+    "usfl": "^0.2.6",
+    "vinyl-source-stream": "^1.0.0"
   },
   "browser": {
     "THREE": "./src/vendor/three.js/three.min.js"
   },
   "browserify": {
-    "transform": [ "browserify-shim" ]
+    "transform": [
+      "browserify-shim"
+    ]
   },
   "browserify-shim": {
-    "THREE": { "exports": "THREE" }
+    "THREE": {
+      "exports": "THREE"
+    }
   }
 }

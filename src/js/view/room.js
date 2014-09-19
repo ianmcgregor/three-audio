@@ -1,6 +1,6 @@
 'use strict';
 
-var THREE = require('THREE');
+var THREE = require('three');
 
 function Room(width, depth, height) {
     THREE.Object3D.call(this);

@@ -1,6 +1,6 @@
 'use strict';
 
-var THREE = require('THREE');
+var THREE = require('three');
 
 function ThreeBase(fov, near, far) {
     this.scene = new THREE.Scene();
@@ -8,7 +8,7 @@ function ThreeBase(fov, near, far) {
     this.deltaTime = 0;
     this.elapsedTime = 0;
     this.fov = fov || 45;
-    this.aspectRatio = 1;
+    this.aspectRatio = 2;
     this.near = near || 0.1;
     this.far = far || 10000;
 
@@ -46,9 +46,7 @@ ThreeBase.prototype.update = function(deltaTime, elapsedTime) {
 };
 
 ThreeBase.prototype.size = function(width, height) {
-    this.width = width || window.innerWidth;
-    this.height = height || window.innerHeight;
-    // TODO: define aspect ratio - either use or copy from Viewport util
+    this.width = isNaN(width) ? window.innerWidth : width;
     this.height = this.width / 2;
     this.aspectRatio = this.width / this.height;
     this.camera.aspect = this.aspectRatio;

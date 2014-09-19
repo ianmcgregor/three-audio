@@ -2,8 +2,6 @@
   "name": "three-audio",
   "version": "0.0.0",
   "dependencies": {
-    "three.js": "*",
-    "js-signals": "*",
-    "js-lib": "*"
+  
   }
 }

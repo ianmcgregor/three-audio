@@ -20,12 +20,6 @@ var src = './src',
     jsBundle = 'bundle.js',
     vendors = src+'/vendor/';
 
-// alias libs to short names
-var alias = {
-  Lib: vendors+'js-lib/dist/lib.js',
-  signals: vendors+'js-signals/dist/signals.js'
-};
-
 //log
 function logError(msg) {
   console.log(chalk.bold.red('[ERROR]'), msg);
@@ -33,14 +27,8 @@ function logError(msg) {
 
 // build bundled js using browserify
 function buildJS(debug) {
-  var bundler = browserify(jsSrc+jsIndex);
-  // alias libs to short names
-  for(var key in alias) {
-    bundler.require(alias[key], { expose: key })
-      .on('error', logError);
-  }
-  var bundleStream = bundler.bundle({ debug: debug });
-  bundleStream
+  return browserify(jsSrc+jsIndex, { debug: debug })
+    .bundle()
     .on('error', logError)
     .pipe(source(jsSrc+jsIndex))
     .pipe(gulpIf(!debug, streamify(strip())))

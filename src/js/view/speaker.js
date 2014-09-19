@@ -1,12 +1,13 @@
 'use strict';
 
 var Sono = require('../lib/sono.min.js'),
-    THREE = require('THREE');
+    THREE = require('three'),
+    usfl = require('usfl');
 
-function Speaker(scene, sounds, x, y, z) {
+function Speaker(scene, x, y, z, color, closeId, ambienceId) {
 
     // mesh
-    var speaker = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 16), new THREE.MeshPhongMaterial({ color: 0x22ee22 }));
+    var speaker = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 16), new THREE.MeshPhongMaterial({ color: color }));
     speaker.position.set(x, y, z);
     scene.add(speaker);
 
@@ -15,23 +16,47 @@ function Speaker(scene, sounds, x, y, z) {
     light.position.set(x, y - 150, z);
     scene.add(light);
 
-    // sound
-    var sound = Sono.createSound(sounds);
-    sound.loop = true;
-    // add a panner node
-    var pan = sound.node.panner();
+    var lightB = new THREE.PointLight(0xffffff, 1, 300);
+    lightB.position.set(x, y + 150, z);
+    scene.add(lightB);
+
+    // close
+    var close = Sono.getById(closeId);
+    close.loop = true;
+    var pan = close.node.panner();
     // set the audio position and orientation to forward vec of speaker
     pan.setSourcePosition(speaker.position);
     pan.setSourceOrientation(speaker.position.clone().normalize());
     // play
-    sound.play();
+    close.play();
+
+    var ambience = Sono.getById(ambienceId);
+    ambience.loop = true;
+    var panB = ambience.node.panner();
+    // set the audio position and orientation to forward vec of speaker
+    panB.setSourcePosition(speaker.position);
+    panB.setSourceOrientation(speaker.position.clone().normalize());
+    // play
+    ambience.play();
+
+    close.volume = 0;
+    ambience.volume = 0;
 
     function update(elapsedTime) {
-        speaker.scale.x = speaker.scale.y = 2 + Math.sin(elapsedTime * 12)/4;
+        speaker.scale.x = speaker.scale.y = speaker.scale.z = 2 + Math.sin(elapsedTime * 12)/4;
+    }
+
+    function toggleNear(distance) {
+        var x = usfl.math.map(distance, 400, 1000, 0, 1);
+        x = usfl.math.clamp(x, 0, 1);
+        close.volume = 1 - x;
+        ambience.volume = x;
     }
 
     return Object.freeze({
-        update: update
+        update: update,
+        position: speaker.position,
+        toggleNear: toggleNear
     });
 }
 
