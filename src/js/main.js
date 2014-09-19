@@ -93,11 +93,11 @@ ThreeAudio.prototype.createScene = function() {
 
     this.speakers = [];
 
-    this.speakers[0] = new Speaker(this.scene, x, y, z, 0xFF0000, 'close0', 'ambience0');
+    this.speakers[0] = new Speaker(this.scene, x, y, z, 0xFF0000, 'close0', 'ambience0', 'cb0');
 
-    this.speakers[1] = new Speaker(this.scene, -x, y, -z, 0x00FF00, 'close1', 'ambience1');
+    this.speakers[1] = new Speaker(this.scene, -x, y, -z, 0x00FF00, 'close1', 'ambience1', 'cb1');
 
-    this.speakers[2] = new Speaker(this.scene, -x, y, z, 0x0000FF, 'close2', 'ambience2');
+    this.speakers[2] = new Speaker(this.scene, -x, y, z, 0x0000FF, 'close2', 'ambience2', 'cb2');
     
     var info = document.createElement('p');
     info.innerHTML = 'Use the arrow keys or WASD to move around the room. Space to jump.';

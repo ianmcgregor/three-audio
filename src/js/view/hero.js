@@ -2,7 +2,7 @@
 
 var usfl = require('usfl'),
     THREE = require('three'),
-    KeyInput = require('../utils/key-input.js');
+    Input = require('../utils/key-input.js');
 
 function Hero(materials) {
     var material = (materials instanceof Array) ? new THREE.MeshFaceMaterial(materials) : materials;
@@ -26,7 +26,7 @@ function Hero(materials) {
     this.angle = Math.PI * 0.75; // 45
     this.quaternion.setFromAxisAngle(this.up, this.angle);
 
-    this.forward = new THREE.Vector3(0, 0, 1);
+    this.forward = new THREE.Vector3(0, 0, -1);
     this.forward.applyQuaternion(this.quaternion);
 
     this.velocity = new THREE.Vector3(0, 0, 0);
@@ -40,21 +40,21 @@ Hero.prototype.constructor = Hero;
 
 Hero.prototype.preUpdate = function(deltaTime, elapsedTime) {
 
-    if(KeyInput.left()) {
+    if(Input.left()) {
         this.angle += this.rotSpeed;
     }
-    else if(KeyInput.right()) {
+    else if(Input.right()) {
         this.angle -= this.rotSpeed;
     }
     this.quaternion.setFromAxisAngle(this.up, this.angle);
-    this.forward.set(0, 0, 1);
+    this.forward.set(0, 0, -1);
     this.forward.applyQuaternion(this.quaternion);
 
-    if(KeyInput.up()) {
-        this.velocity.z = usfl.math.lerp(this.velocity.z, -this.maxSpeed, 0.2);
-    }
-    else if(KeyInput.down()) {
+    if(Input.up()) {
         this.velocity.z = usfl.math.lerp(this.velocity.z, this.maxSpeed, 0.2);
+    }
+    else if(Input.down()) {
+        this.velocity.z = usfl.math.lerp(this.velocity.z, -this.maxSpeed, 0.2);
     }
     else {
         this.velocity.z *= 0.5;
@@ -64,7 +64,7 @@ Hero.prototype.preUpdate = function(deltaTime, elapsedTime) {
 
     // jumping and gravity
 
-    if(!this.jumping && KeyInput.space()) {
+    if(!this.jumping && Input.key.space()) {
         this.velocity.y = 10;
         this.jumping = true;
         this.jumpedAt = elapsedTime;

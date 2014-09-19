@@ -290,3 +290,10 @@ body {
 }
 
 /*! Components */
+
+.Controls {
+  bottom: 10px;
+  font-size: 1.2rem;
+  left: 10px;
+  position: absolute;
+}

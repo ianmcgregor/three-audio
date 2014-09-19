@@ -4,7 +4,7 @@ var Sono = require('../lib/sono.min.js'),
     THREE = require('three'),
     usfl = require('usfl');
 
-function Speaker(scene, x, y, z, color, closeId, ambienceId) {
+function Speaker(scene, x, y, z, color, closeId, ambienceId, cbId) {
 
     // mesh
     var speaker = new THREE.Mesh(new THREE.SphereGeometry(16, 16, 16), new THREE.MeshPhongMaterial({ color: color }));
@@ -41,6 +41,17 @@ function Speaker(scene, x, y, z, color, closeId, ambienceId) {
 
     close.volume = 0;
     ambience.volume = 0;
+
+    var cb = document.getElementById(cbId);
+    cb.addEventListener('click', function() {
+        if(!this.checked) {
+            close.pause();
+            ambience.pause();
+        } else {
+            close.play();
+            ambience.play();
+        }
+    });
 
     function update(elapsedTime) {
         speaker.scale.x = speaker.scale.y = speaker.scale.z = 2 + Math.sin(elapsedTime * 12)/4;
